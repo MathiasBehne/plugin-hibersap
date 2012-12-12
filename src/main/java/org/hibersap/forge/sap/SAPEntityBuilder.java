@@ -81,7 +81,8 @@ public class SAPEntityBuilder {
 		//lombok annotations
 		bapiClass.addAnnotation(lombok.Data.class);
 		bapiClass.addAnnotation(lombok.ToString.class);
-		bapiClass.addAnnotation(lombok.RequiredArgsConstructor.class);
+//		bapiClass.addAnnotation(lombok.RequiredArgsConstructor.class);
+		bapiClass.addAnnotation(lombok.NoArgsConstructor.class);
 
 		//because camel-hibersap needs it:
 		bapiClass.addInterface(Serializable.class);
@@ -89,8 +90,7 @@ public class SAPEntityBuilder {
 		
 		this.entity = new SAPEntity(bapiClass);
 
-		//done by lombok
-//		createConstructor(bapiClass, importParams);
+		createConstructor(bapiClass, importParams);
 		createParameters(bapiClass, importParams, javaPackage, Import.class);
 		createParameters(bapiClass, exportParams, javaPackage, Export.class);
 		createParameters(bapiClass, tableParams, javaPackage, Table.class);
@@ -213,9 +213,9 @@ public class SAPEntityBuilder {
 			}
 
 			field.setPrivate();
-			if (annotationClass == Import.class) {
-				field.setFinal(true);
-			}
+//			if (annotationClass == Import.class) {
+//				field.setFinal(true);
+//			}
 			//will be done by lombok
 //			Refactory.createGetterAndSetter(bapiClass, field);
 		}
