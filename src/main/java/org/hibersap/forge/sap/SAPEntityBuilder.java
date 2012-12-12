@@ -19,8 +19,13 @@
 
 package org.hibersap.forge.sap;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import org.hibersap.HibersapException;
 import org.hibersap.annotations.Bapi;
@@ -73,15 +78,25 @@ public class SAPEntityBuilder {
 		// Adding BAPI Annotation
 		final Annotation<JavaClass> bapiAnno = bapiClass.addAnnotation(Bapi.class);
 		bapiAnno.setStringValue(bapiName);
+		//lombok annotations
+		bapiClass.addAnnotation(lombok.Data.class);
+		bapiClass.addAnnotation(lombok.ToString.class);
+		bapiClass.addAnnotation(lombok.RequiredArgsConstructor.class);
 
+		//because camel-hibersap needs it:
+		bapiClass.addInterface(Serializable.class);
+		
+		
 		this.entity = new SAPEntity(bapiClass);
 
-		createConstructor(bapiClass, importParams);
+		//done by lombok
+//		createConstructor(bapiClass, importParams);
 		createParameters(bapiClass, importParams, javaPackage, Import.class);
 		createParameters(bapiClass, exportParams, javaPackage, Export.class);
 		createParameters(bapiClass, tableParams, javaPackage, Table.class);
 
-		Refactory.createToStringFromFields(bapiClass);
+		//done by lombok
+//		Refactory.createToStringFromFields(bapiClass);
 	}
 
 	/**
@@ -201,8 +216,8 @@ public class SAPEntityBuilder {
 			if (annotationClass == Import.class) {
 				field.setFinal(true);
 			}
-
-			Refactory.createGetterAndSetter(bapiClass, field);
+			//will be done by lombok
+//			Refactory.createGetterAndSetter(bapiClass, field);
 		}
 	}
 
@@ -236,7 +251,12 @@ public class SAPEntityBuilder {
 		final Set<FieldMapping> fieldMappings;
 
 		structureClass.addAnnotation(BapiStructure.class);
+		structureClass.addAnnotation(ToString.class);
+		structureClass.addAnnotation(Data.class);
+		structureClass.addInterface(Serializable.class);
 
+
+		
 		switch (parameterMapping.getParamType()) {
 		case STRUCTURE:
 			final StructureMapping structureMapping = (StructureMapping) parameterMapping;
@@ -257,10 +277,12 @@ public class SAPEntityBuilder {
 			final Annotation<JavaClass> annotation = field.addAnnotation(Parameter.class);
 			annotation.setStringValue(fieldMapping.getSapName());
 
-			Refactory.createGetterAndSetter(structureClass, field);
+			//done by lombok
+//			Refactory.createGetterAndSetter(structureClass, field);
 		}
 
-		Refactory.createToStringFromFields(structureClass);
+		//done by lombok
+//		Refactory.createToStringFromFields(structureClass);
 
 		return structureClass;
 	}
