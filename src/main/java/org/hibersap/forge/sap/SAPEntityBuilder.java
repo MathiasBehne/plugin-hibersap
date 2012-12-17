@@ -273,7 +273,14 @@ public class SAPEntityBuilder {
 		for (final FieldMapping fieldMapping : fieldMappings) {
 			final Field<JavaClass> field = structureClass.addField();
 			field.setName(fieldMapping.getJavaName());
-			field.setType(fieldMapping.getAssociatedType());
+			
+//			System.out.println(fieldMapping.getJavaName() + "  " + fieldMapping.getAssociatedType());
+			if(fieldMapping.getAssociatedType().toString().equals("class [B"))
+			{	
+				field.setType(byte.class); //strip array, dunno, why, but throws exception
+			}
+			else
+				field.setType(fieldMapping.getAssociatedType());
 			final Annotation<JavaClass> annotation = field.addAnnotation(Parameter.class);
 			annotation.setStringValue(fieldMapping.getSapName());
 
